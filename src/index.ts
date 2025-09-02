@@ -25,6 +25,8 @@ export function parseJobs(data: string): Map<string, Job> {
         const lines = data.split("\n").map(s => s.trim());
 
         lines.forEach(line => {
+            if(line === "") return; // Skip empty lines
+
             let sections = line.split(",").map(s => s.trim());
 
             if (sections.length !== 4) {
@@ -34,14 +36,17 @@ export function parseJobs(data: string): Map<string, Job> {
 
             let [ entryTime, jobDescription, action, pid ] = sections;
             
+            // Create Job when action is Start
             if(action === JobAction.Start){
                 let job = new Job();
                 job.pid = pid;
                 job.jobDescription = jobDescription;
                 job.startTime = entryTime;
                 jobs.set(pid, job);
+                return;
             }
 
+            // Update Job when action is End
             else if(action === JobAction.End){
                 let job = jobs.get(pid);
 
@@ -52,14 +57,38 @@ export function parseJobs(data: string): Map<string, Job> {
 
                 job.endTime = entryTime;
                 job.duration = timeToSeconds(job.endTime) - timeToSeconds(job.startTime);
+                return;
             } 
             
+            // Handle unknown actions
             console.error("Unknown action:", action);
             return;
             
         });
 
         return jobs;
+}
+
+/** Validates job executions and generates messages based on their status and duration.
+ * @param jobs - A map of job PIDs to Job objects.
+ * @returns An array of messages regarding job execution status.
+ */
+function ValidateJobExecutions(jobs: Map<string, Job>): string[] {
+    return Array.from(jobs.values()).map((job: Job) => {
+    if(!job.endTime || !job.duration ){
+        // Unclear functional requirement - this scenario could either mean the job failed or is still running.
+        // Assuming it means the job still running for this implementation.
+        // Because current time is not provided (system time can be in the past or future from logs)
+        // we cannot determine if job running over 5 or 10 minutes.
+        // Usually, I would check with PO here.
+    } else if (job.duration > 600){
+        return `Job "${job.jobDescription}" with PID ${job.pid} took longer than 10 minutes.`;
+    } else if (job.duration > 300){
+        return `Job "${job.jobDescription}" with PID ${job.pid} took longer than 5 minutes.`;
+    }
+
+        return "";
+    });
 }
 
 /**
@@ -73,15 +102,10 @@ export function GenerateReport(){
         }
 
         let jobs = parseJobs(data);
-        console.log("Job Report:");
+        let report = ValidateJobExecutions(jobs).filter(msg => msg !== "").join("\n");
 
-        jobs.forEach((job, pid) => {
-            if (job.duration !== undefined) {
-                console.log(`Job PID: ${pid}, Description: ${job.jobDescription}, Duration: ${job.duration} seconds`);
-            } else {
-                console.log(`Job PID: ${pid}, Description: ${job.jobDescription}, Status: Incomplete`);
-            }
-        });
+        console.log("Job Report:");
+        console.log(report);
     });
 }
 
