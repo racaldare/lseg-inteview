@@ -1,0 +1,31 @@
+{
+  "name": "solution",
+  "version": "1.0.0",
+  "description": "LSEG Interview Solution",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc && npm run copy-assets",
+    "copy-assets": "cpx \"src/logs/**/*.*\" dist/logs",
+    "start": "node dist/index.js",
+    "docs": "typedoc --out docs src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/racaldare/lseg-inteview.git"
+  },
+  "author": "Roman Caldare",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/racaldare/lseg-inteview/issues"
+  },
+  "homepage": "https://github.com/racaldare/lseg-inteview#readme",
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "cpx": "^1.5.0",
+    "jest": "^30.1.3",
+    "ts-node": "^10.9.2",
+    "typedoc": "^0.28.12",
+    "typescript": "^5.9.2"
+  }
+}
