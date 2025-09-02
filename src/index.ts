@@ -10,7 +10,7 @@ const logFile = path.join(__dirname, "files/output.txt");
  * @param time - The time string to convert.
  * @returns The total number of seconds.
  */
-export function timeToSeconds(time: string): number {
+export function TimeToSeconds(time: string): number {
   const [hours, minutes, seconds] = time.split(":").map(Number);
   return hours * 3600 + minutes * 60 + seconds;
 }
@@ -19,7 +19,7 @@ export function timeToSeconds(time: string): number {
  * @param data - The raw log data as a string.
  * @returns A map of job PIDs to Job objects.
  */
-export function parseJobs(data: string): Map<string, Job> {
+export function ParseJobs(data: string): Map<string, Job> {
         let jobs: Map<string, Job> = new Map();
         
         const lines = data.split("\n").map(s => s.trim());
@@ -56,7 +56,7 @@ export function parseJobs(data: string): Map<string, Job> {
                 }
 
                 job.endTime = entryTime;
-                job.duration = timeToSeconds(job.endTime) - timeToSeconds(job.startTime);
+                job.duration = TimeToSeconds(job.endTime) - TimeToSeconds(job.startTime);
                 return;
             } 
             
@@ -73,7 +73,7 @@ export function parseJobs(data: string): Map<string, Job> {
  * @param jobs - A map of job PIDs to Job objects.
  * @returns An array of messages regarding job execution status.
  */
-function ValidateJobExecutions(jobs: Map<string, Job>): string[] {
+export function ValidateJobExecutions(jobs: Map<string, Job>): string[] {
     return Array.from(jobs.values()).map((job: Job) => {
     if(!job.endTime || !job.duration ){
         // Unclear functional requirement - this scenario could either mean the job failed or is still running.
@@ -91,6 +91,19 @@ function ValidateJobExecutions(jobs: Map<string, Job>): string[] {
     });
 }
 
+/** Writes the given content to the log file.
+ * @param content - The content to write to the file.
+ */
+export function WriteToFile(content: string){
+    fs.writeFile(logFile, content, (err) => {
+        if (err) {
+            console.error("Error writing to log file:", err);
+            return;
+        }
+        console.log("Report written successfully");
+    });
+}
+
 /**
  * Generates a report of job executions based on their durations and completion status.
  */
@@ -101,13 +114,11 @@ export function GenerateReport(){
             return;
         }
 
-        let jobs = parseJobs(data);
+        let jobs = ParseJobs(data);
         let report = ValidateJobExecutions(jobs).filter(msg => msg !== "").join("\n");
 
-        console.log("Job Report:");
-        console.log(report);
+        WriteToFile(report);
     });
 }
-
 
 GenerateReport();
