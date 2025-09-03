@@ -4,7 +4,8 @@
   "description": "LSEG Interview Solution",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
     "build": "tsc && npm run copy-assets",
     "copy-assets": "cpx \"src/files/**/*.*\" dist/files",
     "start": "node dist/index.js",
@@ -21,9 +22,10 @@
   },
   "homepage": "https://github.com/racaldare/lseg-inteview#readme",
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.3.0",
     "cpx": "^1.5.0",
-    "jest": "^30.1.3",
+    "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
     "typedoc": "^0.28.12",
     "typescript": "^5.9.2"

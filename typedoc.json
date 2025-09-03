@@ -1,5 +1,6 @@
 {
   "entryPoints": ["src/**/*.ts"],
+  "exclude": ["**/*.test.ts", "**/__tests__/**"],
   "out": "docs",
   "excludePrivate": false,
   "excludeProtected": false,
