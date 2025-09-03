@@ -89,4 +89,4 @@ lseg-interview/
 If you have any questions, please don’t hesitate to reach out:
 
 * **Email:** [racaldare@gmail.com](mailto:racaldare@gmail.com)
-* **LinkedIn:** [Roman Caldararu](https://www.linkedin.com/in/roman-caldare-a76b31170/)
+* **LinkedIn:** [Roman Caldare](https://www.linkedin.com/in/roman-caldare-a76b31170/)
